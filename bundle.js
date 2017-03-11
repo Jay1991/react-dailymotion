@@ -43,7 +43,16 @@ var App = function (_React$Component) {
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
       video: 0,
       quality: 'auto',
-      volume: 1
+      volume: 1,
+      paused: false
+    }, _this.handlePause = function (event) {
+      _this.setState({
+        paused: event.target.checked
+      });
+    }, _this.handlePlayerPause = function () {
+      _this.setState({ paused: true });
+    }, _this.handlePlayerPlay = function () {
+      _this.setState({ paused: false });
     }, _this.handleVolume = function (event) {
       _this.setState({
         volume: parseFloat(event.target.value)
@@ -94,6 +103,26 @@ var App = function (_React$Component) {
         React.createElement(
           'h3',
           null,
+          'Paused'
+        ),
+        React.createElement(
+          'p',
+          null,
+          React.createElement('input', {
+            type: 'checkbox',
+            id: 'paused',
+            checked: this.state.paused,
+            onChange: this.handlePause
+          }),
+          React.createElement(
+            'label',
+            { htmlFor: 'paused' },
+            'Paused'
+          )
+        ),
+        React.createElement(
+          'h3',
+          null,
           'Volume'
         ),
         React.createElement('input', {
@@ -134,7 +163,10 @@ var App = function (_React$Component) {
           uiShowStartScreenInfo: false,
           controls: false,
           quality: this.state.quality,
-          volume: this.state.volume
+          volume: this.state.volume,
+          paused: this.state.paused,
+          onPause: this.handlePlayerPause,
+          onPlay: this.handlePlayerPlay
         })
       )
     );
@@ -20829,6 +20861,13 @@ var Dailymotion = function (_React$Component) {
           case 'volume':
             player.setVolume(value);
             break;
+          case 'paused':
+            if (value && !player.paused) {
+              player.pause();
+            } else if (!value && player.paused) {
+              player.play();
+            }
+            break;
           case 'id':
           case 'className':
           case 'width':
@@ -20917,6 +20956,11 @@ process.env.NODE_ENV !== "production" ? Dailymotion.propTypes = {
    * Height of the player element.
    */
   height: React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string]),
+
+  /**
+   * Pause the video.
+   */
+  paused: React.PropTypes.bool, // eslint-disable-line react/no-unused-prop-types
 
   // Player parameters
 
